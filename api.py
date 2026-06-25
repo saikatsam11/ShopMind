@@ -48,15 +48,10 @@ state = AppState()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    from qdrant_client import QdrantClient
     print("Loading embedder...")
     state.embedder = _rag.load_embedder()
     print("Connecting to Qdrant...")
-    state.qdrant   = QdrantClient(
-        host=os.getenv("QDRANT_HOST", _rag.QDRANT_HOST),
-        port=int(os.getenv("QDRANT_PORT", _rag.QDRANT_PORT)),
-        timeout=60,
-    )
+    state.qdrant   = _rag.load_qdrant_client()
     print("Loading LLM...")
     state.llm = _rag.load_llm()
     print("API ready.")

@@ -17,6 +17,9 @@ data/
 # Qdrant local storage — never push, use Qdrant Cloud for deployment
 qdrant_storage/
 
+# One-time migration script
+migrate_to_cloud.py
+
 # Evaluation outputs — too large for git
 ragas_results*.json
 evaluation_results*.json
@@ -27,6 +30,6 @@ evaluation_results*.json
 .DS_Store
 Thumbs.db
 *.png
-*.txt
+docu.txt
 *.jsonl
 RAG_Ecommerce_Project.md

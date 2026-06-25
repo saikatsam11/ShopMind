@@ -32,6 +32,8 @@ log = logging.getLogger(__name__)
 # ── Config ────────────────────────────────────────────────────────────────────
 QDRANT_HOST     = "localhost"
 QDRANT_PORT     = 6333
+QDRANT_URL      = os.getenv("QDRANT_URL")
+QDRANT_API_KEY  = os.getenv("QDRANT_API_KEY")
 COLLECTION_NAME = "products"
 EMBEDDING_MODEL = "BAAI/bge-small-en-v1.5"
 NIM_BASE_URL    = "https://integrate.api.nvidia.com/v1"
@@ -55,6 +57,14 @@ SYSTEM_PROMPT = (
 
 
 # ── Models (loaded once, reused across queries) ───────────────────────────────
+def load_qdrant_client() -> QdrantClient:
+    if QDRANT_URL and QDRANT_API_KEY:
+        log.info("  connecting to Qdrant Cloud")
+        return QdrantClient(url=QDRANT_URL, api_key=QDRANT_API_KEY, timeout=60)
+    log.info("  connecting to local Qdrant")
+    return QdrantClient(host=QDRANT_HOST, port=QDRANT_PORT, timeout=60)
+
+
 def load_embedder() -> SentenceTransformer:
     device = "cuda" if torch.cuda.is_available() else "cpu"
     log.info(f"  loading embedder on {device}")
