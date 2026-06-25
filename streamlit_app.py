@@ -154,11 +154,14 @@ if "catalog"       not in st.session_state: st.session_state.catalog       = Non
 
 # ── API helpers ────────────────────────────────────────────────────────────────
 def check_api() -> bool:
-    try:
-        r = requests.get(f"{API_BASE}/health", timeout=15)
-        return r.status_code == 200
-    except Exception:
-        return False
+    for _ in range(3):
+        try:
+            r = requests.get(f"{API_BASE}/health", timeout=30)
+            if r.status_code == 200:
+                return True
+        except Exception:
+            pass
+    return False
 
 
 def send_message(message: str) -> dict | None:
