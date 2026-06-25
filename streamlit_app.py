@@ -155,7 +155,7 @@ if "catalog"       not in st.session_state: st.session_state.catalog       = Non
 # ── API helpers ────────────────────────────────────────────────────────────────
 def check_api() -> bool:
     try:
-        r = requests.get(f"{API_BASE}/health", timeout=3)
+        r = requests.get(f"{API_BASE}/health", timeout=15)
         return r.status_code == 200
     except Exception:
         return False
@@ -222,8 +222,7 @@ if st.session_state.api_ok is None:
 
 if not st.session_state.api_ok:
     st.error(
-        "Cannot reach the FastAPI backend at `http://localhost:8000`.  \n"
-        "Start it with: `uvicorn 08_api:app --reload --port 8000`"
+        "Cannot reach the ShopMind API. The backend may be starting up — please wait a moment and refresh the page."
     )
     st.stop()
 
