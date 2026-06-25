@@ -66,10 +66,10 @@ Evaluated on 92 test samples across the product catalog.
 
 | Metric | Score |
 |---|---|
-| **Faithfulness** | 0.583 |
-| **Answer Relevancy** | 0.768 |
-| **Context Precision** | 0.333 |
-| **Context Recall** | 0.463 |
+| **Faithfulness** | 0.519 |
+| **Answer Relevancy** | 0.854 |
+| **Context Precision** | 0.326 |
+| **Context Recall** | 0.348 |
 | **Overall (avg)** | **0.512** |
 
 ---
