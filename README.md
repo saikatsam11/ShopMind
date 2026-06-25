@@ -134,4 +134,6 @@ streamlit run streamlit_app.py
 
 ## Dataset
 
-Amazon Electronics dataset — 200,000 products scraped and preprocessed from Amazon product listings across 25 categories including Computers, Camera & Photo, Cell Phones, Home Audio, and more.
+**Amazon Reviews 2023** — [amazon-reviews-2023.github.io](https://amazon-reviews-2023.github.io/)
+
+200,000 electronics products preprocessed from Amazon product listings across 25 categories including Computers, Camera & Photo, Cell Phones, Home Audio, and more.
