@@ -17,8 +17,9 @@ data/
 # Qdrant local storage — never push, use Qdrant Cloud for deployment
 qdrant_storage/
 
-# One-time migration script
+# One-time scripts
 migrate_to_cloud.py
+create_indexes.py
 
 # Evaluation outputs — too large for git
 ragas_results*.json
