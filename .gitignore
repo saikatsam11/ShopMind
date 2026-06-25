@@ -1,0 +1,32 @@
+# Secrets — never commit API keys
+.env
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+rag/
+
+# Data / large files
+*.csv
+*.json
+data/
+
+# Qdrant local storage — never push, use Qdrant Cloud for deployment
+qdrant_storage/
+
+# Evaluation outputs — too large for git
+ragas_results*.json
+evaluation_results*.json
+
+# OS / IDE
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.png
+*.txt
+*.jsonl
+RAG_Ecommerce_Project.md
