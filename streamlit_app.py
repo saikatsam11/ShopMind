@@ -239,10 +239,13 @@ with st.sidebar:
     st.markdown("## 📦 Catalog")
 
     if st.button("Refresh Catalog", use_container_width=True):
-        st.session_state.catalog = fetch_catalog()
+        with st.spinner("Loading..."):
+            st.session_state.catalog = fetch_catalog()
+        st.rerun()
 
     if st.session_state.catalog is None:
-        st.session_state.catalog = fetch_catalog()
+        with st.spinner("Loading catalog..."):
+            st.session_state.catalog = fetch_catalog()
 
     if st.session_state.catalog:
         summary_text = st.session_state.catalog.get("summary", "").replace("$", "\\$")
