@@ -169,11 +169,15 @@ def send_message(message: str) -> dict | None:
         r = requests.post(
             f"{API_BASE}/chat",
             json={"message": message, "session_id": st.session_state.session_id},
-            timeout=60,
+            timeout=120,
         )
         r.raise_for_status()
         return r.json()
-    except requests.exceptions.ConnectionError:
+    except requests.exceptions.Timeout:
+        st.error("Request timed out — the model is taking too long. Please try again.")
+        return None
+    except requests.exceptions.ConnectionError as e:
+        st.error(f"Connection error: {e}")
         return None
     except Exception as e:
         st.error(f"API error: {e}")
