@@ -224,9 +224,10 @@ if st.session_state.api_ok is None:
     st.session_state.api_ok = check_api()
 
 if not st.session_state.api_ok:
-    st.error(
-        "Cannot reach the ShopMind API. The backend may be starting up — please wait a moment and refresh the page."
-    )
+    st.warning("Connecting to ShopMind API...")
+    if st.button("Retry Connection"):
+        st.session_state.api_ok = None
+        st.rerun()
     st.stop()
 
 # ── Sidebar: Catalog browser ───────────────────────────────────────────────────
