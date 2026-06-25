@@ -11,7 +11,7 @@ Make sure FastAPI is running first:
 import requests
 import streamlit as st
 
-API_BASE = "http://localhost:1110"
+API_BASE = "https://saix11-shopmind-api.hf.space"
 
 # ── Page config ────────────────────────────────────────────────────────────────
 st.set_page_config(
