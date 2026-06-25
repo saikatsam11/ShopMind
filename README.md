@@ -18,31 +18,29 @@ pinned: false
 
 ## Architecture
 
-```
-User Query
-    │
-    ▼
-┌─────────────────────────────────────────────────────┐
-│              Streamlit Frontend                      │
-│         shopmind-ai.streamlit.app                    │
-└─────────────────┬───────────────────────────────────┘
-                  │ REST API
-                  ▼
-┌─────────────────────────────────────────────────────┐
-│           FastAPI Backend (HuggingFace Spaces)       │
-│  • Query rewriting (conversation history)            │
-│  • Category-aware filtering                          │
-│  • Greeting detection                                │
-└──────┬──────────────────────┬───────────────────────┘
-       │                      │
-       ▼                      ▼
-┌─────────────┐     ┌──────────────────────┐
-│   Qdrant    │     │     NVIDIA NIM        │
-│   Cloud     │     │  gpt-oss-120b         │
-│  200K docs  │     │  (LLM Generator)      │
-│ BGE-small   │     └──────────────────────┘
-│ embeddings  │
-└─────────────┘
+```mermaid
+flowchart TD
+    User(["👤 User"]) -->|types query| SF["🖥️ Streamlit Frontend\nshopmind-ai.streamlit.app"]
+    SF -->|REST API POST /chat| API["⚡ FastAPI Backend\nHugging Face Spaces"]
+
+    API --> QR["🔄 Query Rewriter\nRewrite with chat history"]
+    QR --> CF["🏷️ Category Filter\nAuto-detect product category"]
+    CF --> RET["🔍 Hybrid Retriever"]
+
+    RET -->|Dense search| QD["🗄️ Qdrant Cloud\n200K products\nBGE-small-en-v1.5"]
+    RET -->|Sparse search| BM["📊 BM25\nFastEmbed"]
+
+    QD --> RANK["📋 Re-rank & Filter\nScore threshold 0.74"]
+    BM --> RANK
+
+    RANK -->|Top-K products| LLM["🤖 NVIDIA NIM\ngpt-oss-120b\nLLM Generator"]
+    LLM -->|Recommendation| SF
+
+    style User fill:#4f46e5,color:#fff
+    style SF fill:#0ea5e9,color:#fff
+    style API fill:#8b5cf6,color:#fff
+    style QD fill:#10b981,color:#fff
+    style LLM fill:#f59e0b,color:#fff
 ```
 
 ---
