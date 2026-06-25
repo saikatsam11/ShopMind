@@ -147,7 +147,10 @@ def chat(req: ChatRequest):
         if p.get("score", 0.0) >= 0.74
     ]
 
-    response_text = result["response"].replace("*Why it fits:*", "**Why it fits:**")
+    import re
+    response_text = result["response"]
+    response_text = response_text.replace("*Why it fits:*", "**Why it fits:**")
+    response_text = re.sub(r"`([^`]*)`", r"\1", response_text)
 
     return ChatResponse(
         session_id=session_id,
