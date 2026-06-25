@@ -147,9 +147,11 @@ def chat(req: ChatRequest):
         if p.get("score", 0.0) >= 0.74
     ]
 
+    response_text = result["response"].replace("*Why it fits:*", "**Why it fits:**")
+
     return ChatResponse(
         session_id=session_id,
-        response=result["response"],
+        response=response_text,
         products=products,
         search_query=result["search_query"],
     )
