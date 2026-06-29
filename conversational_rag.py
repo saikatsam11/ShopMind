@@ -105,19 +105,22 @@ def rewrite_query(user_message: str, session: ChatSession, llm_client) -> str:
         f"Follow-up: {user_message}\n\n"
         "Standalone search query (output only the query, nothing else):"
     )
-    stream = llm_client.chat.completions.create(
-        model=LLM_MODEL,
-        messages=[{"role": "user", "content": prompt}],
-        temperature=0.0,
-        max_tokens=128,
-        extra_body={"reasoning_effort": "low"},
-        stream=True,
-    )
-    chunks = []
-    for chunk in stream:
-        if chunk.choices and chunk.choices[0].delta.content:
-            chunks.append(chunk.choices[0].delta.content)
-    rewritten = "".join(chunks).strip()
+    try:
+        stream = llm_client.chat.completions.create(
+            model=LLM_MODEL,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.0,
+            max_tokens=128,
+            stream=True,
+        )
+        chunks = []
+        for chunk in stream:
+            if chunk.choices and chunk.choices[0].delta.content:
+                chunks.append(chunk.choices[0].delta.content)
+        rewritten = "".join(chunks).strip()
+    except Exception as e:
+        log.warning(f"  Query rewrite failed ({e}), using original message")
+        return user_message
     if rewritten != user_message:
         log.info(f"  Rewritten: '{user_message}' → '{rewritten}'")
     return rewritten
@@ -303,7 +306,6 @@ def generate_with_history(
         ],
         temperature=0.1,
         max_tokens=1024,
-        extra_body={"reasoning_effort": "low"},
         stream=True,
     )
     chunks = []
