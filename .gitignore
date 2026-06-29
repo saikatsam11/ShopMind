@@ -39,3 +39,5 @@ testting.py
 *.pdf
 *.log
 *.out
+*.tex
+*.synctex.gz
