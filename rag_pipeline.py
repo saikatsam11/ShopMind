@@ -37,7 +37,8 @@ QDRANT_API_KEY  = os.getenv("QDRANT_API_KEY")
 COLLECTION_NAME = "products"
 EMBEDDING_MODEL = "BAAI/bge-small-en-v1.5"
 NIM_BASE_URL    = "https://integrate.api.nvidia.com/v1"
-LLM_MODEL       = "openai/gpt-oss-120b"     # production generator (NVIDIA NIM)
+GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
+LLM_MODEL       = "gemini-2.5-flash"
 LLM_MODEL_SMALL = "openai/gpt-oss-20b"      # smaller model for --compare mode
 TOP_K           = 8
 
@@ -72,14 +73,10 @@ def load_embedder() -> SentenceTransformer:
 
 
 def load_llm() -> OpenAI:
-    api_key = os.environ.get("NVIDIA_API_KEY", "").strip()
+    api_key = os.environ.get("GOOGLE_API_KEY", "").strip()
     if not api_key:
-        raise ValueError(
-            "NVIDIA_API_KEY not set.\n"
-            "Get a free key from https://build.nvidia.com → API Keys\n"
-            "Then run:  set NVIDIA_API_KEY=your_key"
-        )
-    client = OpenAI(base_url=NIM_BASE_URL, api_key=api_key, timeout=60.0)
+        raise ValueError("GOOGLE_API_KEY not set.")
+    client = OpenAI(base_url=GEMINI_BASE_URL, api_key=api_key, timeout=120.0)
     log.info(f"  LLM ready: {LLM_MODEL}")
     return client
 
