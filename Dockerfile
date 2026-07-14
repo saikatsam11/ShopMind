@@ -15,6 +15,9 @@ COPY api.py .
 COPY rag_pipeline.py .
 COPY conversational_rag.py .
 
+# Pre-download embedding model into the image so startup doesn't block on a 130MB download
+RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('BAAI/bge-small-en-v1.5')"
+
 EXPOSE 7860
 
 CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "7860"]
