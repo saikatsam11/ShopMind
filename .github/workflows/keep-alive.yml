@@ -1,0 +1,20 @@
+name: Keep Qdrant Cluster Alive
+
+on:
+  schedule:
+    - cron: '0 9 */3 * *'  # every 3 days at 9am UTC
+  workflow_dispatch:        # allow manual trigger from GitHub UI
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping ShopMind API (wakes HF Space → connects to Qdrant)
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://saix11-shopmind-api.hf.space/health)
+          echo "Health endpoint status: $STATUS"
+          if [ "$STATUS" != "200" ]; then
+            echo "Warning: API returned $STATUS"
+          else
+            echo "Cluster pinged successfully — inactivity timer reset"
+          fi
