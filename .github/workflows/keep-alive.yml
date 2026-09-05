@@ -21,14 +21,32 @@ jobs:
             echo "Warning: HF Space returned $STATUS"
           fi
 
-      - name: Ping Streamlit app
+      # Streamlit Cloud 303-redirects plain curl to an auth gate, so the request
+      # never reaches the app and never wakes it. A real browser is required.
+      - name: Wake Streamlit (headless browser)
         run: |
-          STATUS=$(curl -L --max-time 120 -s -o /dev/null -w "%{http_code}" \
-            https://shopmind-ai.streamlit.app)
-          echo "Streamlit status: $STATUS"
-          HEALTH=$(curl -L --max-time 120 -s -o /dev/null -w "%{http_code}" \
-            https://shopmind-ai.streamlit.app/_stcore/health)
-          echo "Streamlit health endpoint: $HEALTH"
-          if [ "$STATUS" != "200" ]; then
-            echo "Warning: Streamlit returned $STATUS"
-          fi
+          pip install --quiet playwright
+          playwright install --with-deps chromium
+          python - <<'PY'
+          from playwright.sync_api import sync_playwright
+
+          URL = "https://shopmind-ai.streamlit.app"
+
+          with sync_playwright() as p:
+              browser = p.chromium.launch()
+              page = browser.new_page()
+              page.goto(URL, wait_until="load", timeout=120_000)
+
+              # If the app is asleep, Streamlit shows a wake-up button.
+              try:
+                  page.get_by_text("get this app back up", exact=False).click(timeout=15_000)
+                  print("App was asleep -- clicked wake button, waiting for boot...")
+                  page.wait_for_timeout(45_000)
+              except Exception:
+                  print("No wake button found -- app was already awake")
+
+              page.wait_for_timeout(10_000)
+              print("Final title:", page.title())
+              print("Final URL:  ", page.url)
+              browser.close()
+          PY
