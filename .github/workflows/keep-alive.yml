@@ -1,20 +1,34 @@
-name: Keep Qdrant Cluster Alive
+name: Keep ShopMind Alive
 
 on:
   schedule:
-    - cron: '0 9 */3 * *'  # every 3 days at 9am UTC
-  workflow_dispatch:        # allow manual trigger from GitHub UI
+    - cron: '0 */5 * * *'   # every 5 hours (max gap 4h, well under the ~13h sleep)
+  workflow_dispatch:         # allow manual trigger from GitHub UI
 
 jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-      - name: Ping ShopMind API (wakes HF Space → connects to Qdrant)
+      - name: Ping HF Space API (wakes container -> connects to Qdrant)
         run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://saix11-shopmind-api.hf.space/health)
-          echo "Health endpoint status: $STATUS"
-          if [ "$STATUS" != "200" ]; then
-            echo "Warning: API returned $STATUS"
+          STATUS=$(curl -L --max-time 120 -s -o /tmp/hf.txt -w "%{http_code}" \
+            https://saix11-shopmind-api.hf.space/health)
+          echo "HF Space status: $STATUS"
+          echo "Body: $(cat /tmp/hf.txt)"
+          if [ "$STATUS" = "200" ]; then
+            echo "HF Space awake -- Qdrant inactivity timer also reset"
           else
-            echo "Cluster pinged successfully — inactivity timer reset"
+            echo "Warning: HF Space returned $STATUS"
+          fi
+
+      - name: Ping Streamlit app
+        run: |
+          STATUS=$(curl -L --max-time 120 -s -o /dev/null -w "%{http_code}" \
+            https://shopmind-ai.streamlit.app)
+          echo "Streamlit status: $STATUS"
+          HEALTH=$(curl -L --max-time 120 -s -o /dev/null -w "%{http_code}" \
+            https://shopmind-ai.streamlit.app/_stcore/health)
+          echo "Streamlit health endpoint: $HEALTH"
+          if [ "$STATUS" != "200" ]; then
+            echo "Warning: Streamlit returned $STATUS"
           fi
