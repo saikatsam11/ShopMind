@@ -112,7 +112,7 @@ pip install -r requirements.txt
 
 # Set environment variables
 cp .env.example .env
-# Add your NVIDIA_API_KEY, QDRANT_URL, QDRANT_API_KEY
+# Add your LLM_API_KEY, QDRANT_URL, QDRANT_API_KEY
 
 # Run FastAPI backend
 uvicorn api:app --reload --port 8000
