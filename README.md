@@ -1,12 +1,3 @@
----
-title: ShopMind API
-emoji: 🛒
-colorFrom: blue
-colorTo: purple
-sdk: docker
-pinned: false
----
-
 # 🛒 ShopMind — AI-Powered E-Commerce Recommendation System
 
 > Conversational product recommendations using Retrieval-Augmented Generation (RAG), NVIDIA NIM, and Qdrant vector search.
