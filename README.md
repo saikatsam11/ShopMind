@@ -33,7 +33,7 @@ flowchart TD
     QD --> RANK["📋 Re-rank & Filter\nScore threshold 0.74"]
     BM --> RANK
 
-    RANK -->|Top-K products| LLM["🤖 Gemini-2.5-flash\nLLM Generator"]
+    RANK -->|Top-K products| LLM["🤖 \nGemini-2.5-flash\nLLM Generator"]
     LLM -->|Recommendation| SF
 
     style User fill:#4f46e5,color:#fff
