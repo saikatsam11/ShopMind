@@ -1,6 +1,6 @@
 # 🛒 ShopMind — AI-Powered E-Commerce Recommendation System
 
-> Conversational product recommendations using Retrieval-Augmented Generation (RAG), NVIDIA NIM, and Qdrant vector search.
+> Conversational product recommendations using Retrieval-Augmented Generation (RAG), Gemini, and Qdrant vector search.
 
 🔗 **Live Demo:** [shopmind-ai.streamlit.app](https://shopmind-ai.streamlit.app)  
 🔗 **API Docs:** [saix11-shopmind-api.hf.space/docs](https://saix11-shopmind-api.hf.space/docs)
