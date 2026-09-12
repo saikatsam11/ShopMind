@@ -33,7 +33,7 @@ flowchart TD
     QD --> RANK["📋 Re-rank & Filter\nScore threshold 0.74"]
     BM --> RANK
 
-    RANK -->|Top-K products| LLM["🤖 NVIDIA NIM\ngpt-oss-120b\nLLM Generator"]
+    RANK -->|Top-K products| LLM["🤖 Gemini-2.5-flash\nLLM Generator"]
     LLM -->|Recommendation| SF
 
     style User fill:#4f46e5,color:#fff
@@ -53,7 +53,7 @@ flowchart TD
 | **Backend** | FastAPI + Uvicorn |
 | **Vector DB** | Qdrant Cloud |
 | **Embeddings** | BGE-small-en-v1.5 (sentence-transformers) |
-| **LLM** | NVIDIA NIM — gpt-oss-120b |
+| **LLM** | Gemini-2.5-flash |
 | **Sparse Retrieval** | FastEmbed BM25 |
 | **Evaluation** | RAGAS |
 | **Deployment** | Hugging Face Spaces + Streamlit Cloud |
