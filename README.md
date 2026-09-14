@@ -53,7 +53,7 @@ flowchart TD
 
 ## RAGAS Evaluation Results
 
-Evaluated on 23 test queries with decoupled generator and evaluator models, so no model grades its own output: **Qwen3-27b** (generator, Groq) and **gpt-oss-20b** (evaluator, NVIDIA NIM).
+Evaluated on 23 test queries with decoupled generator and evaluator models, so no model grades its own output: **Qwen3-27b** (generator) and **gpt-oss-20b** (evaluator).
 
 | Metric | Score |
 |---|---|
