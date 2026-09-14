@@ -41,6 +41,7 @@ _spec.loader.exec_module(_mod)
 load_embedder            = _mod.load_embedder
 load_llm                 = _mod.load_llm
 format_context           = _mod.format_context
+extract_details          = _mod.extract_details
 extract_price_from_query  = _mod.extract_price_from_query
 extract_rating_from_query   = _mod.extract_rating_from_query
 extract_category_from_query = _mod.extract_category_from_query
@@ -275,6 +276,7 @@ def retrieve_diverse(
             "rating_count": p.payload.get("rating_number", 0),
             "category":     p.payload.get("main_category", ""),
             "sub_category": p.payload.get("sub_category", ""),
+            "details":      extract_details(p.payload.get("combined_text", "")),
             "score":        round(p.score, 4),
         }
         for p in diverse

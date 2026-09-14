@@ -53,6 +53,12 @@ SYSTEM_PROMPT = (
     "Rank them from best to third-best match. "
     "If fewer than 3 products are genuinely relevant, only recommend those. "
     "If no product is a good match, say so honestly instead of forcing a recommendation. "
+    "Ground every claim in the product information provided. "
+    "Do not add specifications, opinions, marketing language, or comparisons "
+    "that are not explicitly stated in the product text. "
+    "If a detail the user asked about is absent from the product text, say it is "
+    "not specified rather than inferring it. "
+    "If a price is not listed, say so - never state $0.00 as a price. "
     "Keep your response structured and concise."
 )
 
@@ -79,6 +85,25 @@ def load_llm() -> OpenAI:
     client = OpenAI(base_url=GEMINI_BASE_URL, api_key=api_key, timeout=120.0)
     log.info(f"  LLM ready: {LLM_MODEL}")
     return client
+
+
+# ── Product detail extraction ─────────────────────────────────────────────────
+# combined_text (built in data_preparation.py) holds the product description and
+# feature bullets that were embedded. Retrieval was dropping it, so the LLM and
+# RAGAS only ever saw title/brand/price/rating — nothing a claim about battery
+# life, VRAM or water resistance could be grounded in.
+_DETAIL_RE = re.compile(
+    r"(Description|Features):\s*(.*?)(?=\.\s*(?:Description|Features|Price|Rating):|$)",
+    re.S,
+)
+
+
+def extract_details(combined_text: str, limit: int = 400) -> str:
+    if not combined_text:
+        return ""
+    parts = [f"{m.group(1)}: {m.group(2).strip()}" for m in _DETAIL_RE.finditer(combined_text)]
+    text = " | ".join(p for p in parts if p.split(": ", 1)[1])
+    return (text[:limit].rsplit(" ", 1)[0] + "...") if len(text) > limit else text
 
 
 # ── Retrieval ─────────────────────────────────────────────────────────────────
@@ -132,6 +157,7 @@ def retrieve(
             "rating_count": h.payload.get("rating_number", 0),
             "category":     h.payload.get("main_category", ""),
             "sub_category": h.payload.get("sub_category", ""),
+            "details":      extract_details(h.payload.get("combined_text", "")),
             "score":        round(h.score, 4),
         }
         for h in results.points
@@ -153,6 +179,7 @@ def format_context(products: list[dict]) -> str:
             f"   Brand: {brand_str}  |  Price: {price_str}  |  "
             f"Rating: {p['rating']}/5 ({p['rating_count']} reviews)  |  "
             f"Category: {cat_str}"
+            + (f"\n   {p['details']}" if p.get("details") else "")
         )
 
     return "\n\n".join(lines)
