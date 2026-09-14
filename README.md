@@ -53,15 +53,15 @@ flowchart TD
 
 ## RAGAS Evaluation Results
 
-Evaluated on 92 test samples across the product catalog.
+Evaluated on 23 test queries with decoupled generator and evaluator models, so no model grades its own output: **Qwen3-27b** (generator, Groq) and **gpt-oss-20b** (evaluator, NVIDIA NIM).
 
 | Metric | Score |
 |---|---|
-| **Faithfulness** | 0.519 |
-| **Answer Relevancy** | 0.854 |
-| **Context Precision** | 0.326 |
-| **Context Recall** | 0.348 |
-| **Overall (avg)** | **0.512** |
+| **Faithfulness** | 0.767 |
+| **Answer Relevancy** | 0.918 |
+| **Context Precision** | 0.792 |
+| **Context Recall** | 0.609 |
+| **Overall (avg)** | **0.771** |
 
 ---
 
